@@ -1,0 +1,9 @@
+package cheetah_inekf_lcm;
+
+struct kinematic_t
+{
+    int64_t     seq;
+    double      timestamp;
+    int8_t      num_legs;
+    int8_t      contact[num_legs];
+}

@@ -1,0 +1,68 @@
+
+// STL
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <thread>
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <memory>
+#include <iostream>
+
+#include "utils/cheetah_data_t.hpp"
+#include "communication/lcm_handler.hpp"
+#include "system/cheetah_system.hpp"
+
+// Boost
+#include <boost/algorithm/string.hpp>
+// Threading
+#include <boost/thread/condition.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/circular_buffer.hpp>
+
+#define LCM_MULTICAST_URL "udpm://239.255.76.67:7667?ttl=2"
+
+
+int main(int argc, char **argv)
+{
+
+    // Initialize LCM
+    lcm::LCM lcm(LCM_MULTICAST_URL);
+    if (!lcm.good())
+    {
+        // ROS_ERROR_STREAM("LCM init failed.");
+        std::cerr << "LCM init failed" << std::endl;
+        return -1;
+    }
+
+    // Threading
+    boost::mutex cdata_mtx;
+    cheetah_lcm_data_t cheetah_input_data;
+    std::cout << "check check" << std::endl;
+
+    cheetah_inekf_lcm::lcm_handler lcm_subscriber_node(&lcm, &cheetah_input_data, &cdata_mtx);
+    
+    std::cout << "Subscribed" << std::endl;
+    // Set noise parameters
+    inekf::NoiseParams params;
+
+    //TODO: Initialize CheetahSystem
+    std::cout << "Before system initialization" << std::endl;
+    CheetahSystem *system = new CheetahSystem(&lcm, &cdata_mtx, &cheetah_input_data);
+    // system->setEstimator(std::make_shared<BodyEstimator>());
+    std::cout << "System initialized" << std::endl;
+    /// TODO: Listen/Respond Loop
+    bool received_data = true;
+    //we/ TODO:  ros spin
+    while (lcm.handle() == 0)
+    {
+        system->step();
+    }
+
+    return 0;
+}

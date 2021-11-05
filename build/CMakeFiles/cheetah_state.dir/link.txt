@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcheetah_state.a CMakeFiles/cheetah_state.dir/src/system/cheetah_state.cpp.o
+/usr/bin/ranlib libcheetah_state.a
