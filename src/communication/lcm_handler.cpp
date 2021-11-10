@@ -84,7 +84,7 @@ namespace cheetah_inekf_lcm
         {
             start_time_ = rbuf->recv_utime;
         }
-        if (cheetah_buffer_->joint_state_q.size() <= cheetah_buffer_->contact_q.size())
+        if (cheetah_buffer_->contact_q.size() >= cheetah_buffer_->joint_state_q.size())
         {
             std::shared_ptr<JointStateMeasurement> joint_state_ptr = std::shared_ptr<JointStateMeasurement>(new JointStateMeasurement(q_dim));
 
@@ -110,7 +110,7 @@ namespace cheetah_inekf_lcm
         {
             start_time_ = rbuf->recv_utime;
         }
-        if (cheetah_buffer_->joint_state_q.size() > cheetah_buffer_->imu_q.size())
+        if (cheetah_buffer_->joint_state_q.size() >= cheetah_buffer_->imu_q.size())
         {
             // std::shared_ptr<LcmIMUStruct> microstrain_data = std::make_shared<LcmIMUStruct>();
             std::shared_ptr<ImuMeasurement<double>> imu_measurement_ptr = std::shared_ptr<ImuMeasurement<double>>(new ImuMeasurement<double>);

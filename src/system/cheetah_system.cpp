@@ -50,7 +50,10 @@ void CheetahSystem::step() {
                 // pose_publisher_node_.posePublish(state_);
                 poseCallback(state_);
             }
-            lcm_poseCallback(state_);
+
+
+            // lcm_poseCallback(state_);
+        
         } else {
             std::cout << "Initialized initState" << std::endl;
             if (estimator_.biasInitialized()) {
@@ -79,20 +82,22 @@ void CheetahSystem::poseCallback(const CheetahState& state_) {
     }
 }
 
-void CheetahSystem::lcm_poseCallback(const CheetahState& state_) {
-    if (lcm_->good()) {
-        pose_lcmt pose_;
-        pose_.x = state_.x();
-        pose_.y = state_.x();
-        pose_.z = state_.x();
-        pose_.roll = state_.roll();
-        pose_.pitch = state_.pitch();
-        pose_.yaw = state_.yaw();
-        // pose_.timestamp = lcm::LogEvent::timestamp;
+// void CheetahSystem::lcm_poseCallback(const CheetahState& state_) {
+//     if (lcm_->good()) {
+//         pose_lcmt pose_;
+//         pose_.x = state_.x();
+//         pose_.y = state_.y();
+//         pose_.z = state_.z();
+//         pose_.roll = state_.roll();
+//         pose_.pitch = state_.pitch();
+//         pose_.yaw = state_.yaw();
+//         pose_.velocity = {state_.dx(), state_.dy(), state_.dz()};
+//         pose_.omega = {state_.droll(), state_.dpitch(), state_.dyaw()};
+//         // pose_.timestamp = lcm::LogEvent::timestamp;
 
-        lcm_->publish("cheetah_pose", &pose_);
-    }
-}
+//         lcm_->publish("cheetah_pose", &pose_);
+//     }
+// }
 
 // Private Functions
 

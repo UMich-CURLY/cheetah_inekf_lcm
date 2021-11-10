@@ -179,11 +179,22 @@ void BodyEstimator::publishPose(double time, std::string map_frame_id, uint32_t 
 
     // Get inekf pose estimate
     inekf::RobotState estimate = filter_.getState();
-    Eigen::Vector3d p = estimate.getPosition();
+    Eigen::Vector3d position = estimate.getPosition();
+    Eigen::Matrix3d rotation = estimate.getRotation();
+    Eigen::Vector3d velocity = estimate.getVelocity();
 
     // Publish pose in LCM
     // std::cout << "Issue before read " << std::endl;
-    pose.body[0] = p(0); pose.body[1] = p(1); pose.body[2] = p(2);
+    pose.position[0] = position(0); pose.position[1] = position(1); pose.position[2] = position(2);
+    pose.rotation[0][0] = rotation(0, 0); pose.rotation[0][1] = rotation(0, 1); pose.rotation[0][2] = rotation(0, 2);
+    pose.rotation[1][0] = rotation(1, 0); pose.rotation[1][1] = rotation(1, 1); pose.rotation[1][2] = rotation(1, 2);
+    pose.rotation[2][0] = rotation(2, 0); pose.rotation[2][1] = rotation(2, 1); pose.rotation[2][2] = rotation(2, 2);
+
+
+    pose.velocity[0] = velocity(0);
+    pose.velocity[1] = velocity(1);
+    pose.velocity[2] = velocity(2);
+
     lcm_->publish(LCM_POSE_CHANNEL, &pose);
 }
 
