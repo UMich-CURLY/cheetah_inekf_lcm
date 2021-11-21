@@ -25,6 +25,7 @@
 #include "lcm-types/cheetah_inekf_lcm/leg_control_data_lcmt.hpp"
 #include "lcm-types/cheetah_inekf_lcm/wbc_test_data_t.hpp"
 #include "lcm-types/cheetah_inekf_lcm/synced_proprioceptive_lcmt.hpp"
+#include "lcm-types/cheetah_inekf_lcm/reinitialization_lcmt.hpp"
 
 // Threading
 #include <boost/thread/condition.hpp>
@@ -37,13 +38,17 @@ namespace cheetah_inekf_lcm {
 class lcm_handler {
     public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    lcm_handler(lcm::LCM* lcm, cheetah_lcm_data_t* cheetah_buffer, boost::mutex* cdata_mtx);
+    lcm_handler(lcm::LCM* lcm, cheetah_lcm_data_t* cheetah_buffer, boost::mutex* cdata_mtx, bool* reinit_cmd);
     
     ~lcm_handler();
 
     void synced_msgs_lcm_callback(const lcm::ReceiveBuffer* rbuf,
                                const std::string& channel_name,
                                const synced_proprioceptive_lcmt* msg);
+
+    void receiveReinitializeMsg(const lcm::ReceiveBuffer* rbuf,
+                               const std::string& channel_name,
+                               const reinitialization_lcmt* msg);
     
     void receiveLegControlMsg(const lcm::ReceiveBuffer *rbuf,
                                         const std::string &chan,
@@ -80,6 +85,7 @@ class lcm_handler {
 
     //Debugging
     bool debug_enabled_;
+    bool* reinit_cmd_;
     std::ofstream kinematics_debug_;
 
     int64_t start_time_; //<! the starting time of the interface

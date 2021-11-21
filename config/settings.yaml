@@ -21,6 +21,7 @@ settings:
   lcm_imu_channel: "microstrain" # contains acceleration, omega, rpy, quaternion data
   lcm_contact_est_channel: "wbc_lcm_data" # offered by MIT, use gait cycle to obtain estimated contact states
   lcm_output_channel: "synced_proprioceptive_data" # the channel that publishes a set of synced message 
+  lcm_reinitialize_channel: "reinitialize_command" # receive whether the program should be reinitialized
 
   leg_q_dimension: 12
   leg_qd_dimension: 12

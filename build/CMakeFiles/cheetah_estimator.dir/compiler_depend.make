@@ -1210,7 +1210,6 @@ CMakeFiles/cheetah_estimator.dir/src/cheetah_estimator.cpp.o: ../src/cheetah_est
   ../include/utils/utils.hpp \
   ../include/communication/lcm-types/cheetah_inekf_lcm/pose_t.hpp \
   ../include/utils/PassiveTimeSync.h \
-  ../include/communication/lcm-types/cheetah_inekf_lcm/pose_lcmt.hpp \
   /usr/include/boost/algorithm/string.hpp \
   /usr/include/boost/algorithm/string/std_containers_traits.hpp \
   /usr/include/boost/algorithm/string/std/string_traits.hpp \
@@ -1808,8 +1807,6 @@ CMakeFiles/cheetah_estimator.dir/src/cheetah_estimator.cpp.o: ../src/cheetah_est
 /usr/include/boost/date_time/time_duration.hpp:
 
 /usr/include/boost/predef/language/stdcpp.h:
-
-../include/communication/lcm-types/cheetah_inekf_lcm/pose_lcmt.hpp:
 
 /usr/include/boost/predef.h:
 

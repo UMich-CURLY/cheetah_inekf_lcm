@@ -1,0 +1,4 @@
+struct reinitialization_lcmt
+{
+    boolean reinitialize_cmd;
+}

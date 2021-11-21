@@ -10,7 +10,6 @@
 #include "utils/cheetah_data_t.hpp"
 #include "utils/PassiveTimeSync.h"
 #include "yaml-cpp/yaml.h"
-#include "communication/lcm-types/cheetah_inekf_lcm/pose_lcmt.hpp"
 // #include "pose_publisher_node.hpp"
 
 // Threading
@@ -49,8 +48,6 @@ class CheetahSystem {
         bool updateNextPacket();
         // Publish output path
         void poseCallback(const CheetahState& state_);
-        // Publish output through lcm
-        void lcm_poseCallback(const CheetahState& state_);
         // Output file
         std::string file_name_;
         std::string tum_file_name_;

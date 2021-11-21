@@ -25,9 +25,19 @@ class pose_t
 
         double     position[3];
 
-        double     rotation[3][3];
+        double     roll;
+
+        double     pitch;
+
+        double     yaw;
 
         double     velocity[3];
+
+        double     droll;
+
+        double     dpitch;
+
+        double     dyaw;
 
     public:
         /**
@@ -139,12 +149,25 @@ int pose_t::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->position[0], 3);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    for (int a0 = 0; a0 < 3; a0++) {
-        tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->rotation[a0][0], 3);
-        if(tlen < 0) return tlen; else pos += tlen;
-    }
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->roll, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->pitch, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->yaw, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->velocity[0], 3);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->droll, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->dpitch, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_encode_array(buf, offset + pos, maxlen - pos, &this->dyaw, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -172,12 +195,25 @@ int pose_t::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->position[0], 3);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    for (int a0 = 0; a0 < 3; a0++) {
-        tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->rotation[a0][0], 3);
-        if(tlen < 0) return tlen; else pos += tlen;
-    }
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->roll, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->pitch, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->yaw, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->velocity[0], 3);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->droll, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->dpitch, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __double_decode_array(buf, offset + pos, maxlen - pos, &this->dyaw, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -190,14 +226,19 @@ int pose_t::_getEncodedSizeNoHash() const
     enc_size += __double_encoded_array_size(NULL, 1);
     enc_size += this->frame_id.size() + 4 + 1;
     enc_size += __double_encoded_array_size(NULL, 3);
-    enc_size += 3 * __double_encoded_array_size(NULL, 3);
+    enc_size += __double_encoded_array_size(NULL, 1);
+    enc_size += __double_encoded_array_size(NULL, 1);
+    enc_size += __double_encoded_array_size(NULL, 1);
     enc_size += __double_encoded_array_size(NULL, 3);
+    enc_size += __double_encoded_array_size(NULL, 1);
+    enc_size += __double_encoded_array_size(NULL, 1);
+    enc_size += __double_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t pose_t::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x1ab14ca87f89d8b5LL;
+    uint64_t hash = 0x6f925c8e35a505a3LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

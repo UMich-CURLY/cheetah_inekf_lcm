@@ -11,13 +11,46 @@
 #include "kin/p_Body_to_HindRightFoot.h"
 
 // Default Constructor
-CheetahState::CheetahState() {
+CheetahState::CheetahState():   left_front_contact_(false),
+                                right_front_contact_(false),
+                                left_hind_contact_(false),
+                                right_hind_contact_(false)
+{
     this->clear();
+    
+    q_.setZero();
+    dq_.setZero();
+    GRF_.setZero();
+
+    left_front_contact_;
+    left_hind_contact_;
+    right_front_contact_;
+    right_hind_contact_;
+
 }
 
+
 // Constructor from cassie_out_t
-CheetahState::CheetahState(const cheetah_lcm_packet_t& cheetah_data) {
+CheetahState::CheetahState(const cheetah_lcm_packet_t& cheetah_data):   left_front_contact_(false),
+                                                                        right_front_contact_(false),
+                                                                        left_hind_contact_(false),
+                                                                        right_hind_contact_(false)
+{
+    this->clear();
+
+    q_.setZero();
+    dq_.setZero();
+    GRF_.setZero();
+
+    left_front_contact_;
+    left_hind_contact_;
+    right_front_contact_;
+    right_hind_contact_;
     this->set(cheetah_data);
+}
+
+CheetahState::~CheetahState() {
+    this->clear();
 }
 
 // Set q and dq from cheetah_lcm_data_t
@@ -26,12 +59,14 @@ void CheetahState::set(const cheetah_lcm_packet_t& cheetah_data) {
     const std::shared_ptr<cheetah_inekf_lcm::ImuMeasurement<double>> imu_data = cheetah_data.imu;
     
     // Set orientation
-    Eigen::Quaternion<double> quat(imu_data.get()->orientation.w, 
-                            imu_data.get()->orientation.x,
-                            imu_data.get()->orientation.y,
-                            imu_data.get()->orientation.z); 
-    Eigen::Vector3d euler = Rotation2Euler(quat.toRotationMatrix()); // Eigen's eulerAngles function caused discontinuities in signal  
-    q_.block<3,1>(3,0) = euler;
+    // Eigen::Quaternion<double> quat(imu_data.get()->orientation.w, 
+    //                         imu_data.get()->orientation.x,
+    //                         imu_data.get()->orientation.y,
+    //                         imu_data.get()->orientation.z); 
+    // Eigen::Vector3d euler = Rotation2Euler(quat.toRotationMatrix()); // Eigen's eulerAngles function caused discontinuities in signal  
+    // q_.block<3,1>(3,0) = euler;
+
+    Eigen::Vector3d euler = Rotation2Euler(this->getRotation());
 
     // Set orientation rates
     Eigen::Vector3d angularVelocity, eulerRates;

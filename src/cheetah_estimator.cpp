@@ -28,41 +28,47 @@
 #define LCM_MULTICAST_URL "udpm://239.255.76.67:7667?ttl=2"
 
 
+
 int main(int argc, char **argv)
 {
+    while (true) {
+        // Initialize LCM
+        lcm::LCM lcm(LCM_MULTICAST_URL);
+        if (!lcm.good())
+        {
+            // ROS_ERROR_STREAM("LCM init failed.");
+            std::cerr << "LCM init failed" << std::endl;
+            return -1;
+        }
 
-    // Initialize LCM
-    lcm::LCM lcm(LCM_MULTICAST_URL);
-    if (!lcm.good())
-    {
-        // ROS_ERROR_STREAM("LCM init failed.");
-        std::cerr << "LCM init failed" << std::endl;
-        return -1;
+        // Threading
+        boost::mutex cdata_mtx;
+        cheetah_lcm_data_t cheetah_input_data;
+        std::cout << "check check" << std::endl;
+        bool reinit_cmd = false;
+        cheetah_inekf_lcm::lcm_handler lcm_subscriber_node(&lcm, &cheetah_input_data, &cdata_mtx, &reinit_cmd);
+        
+        std::cout << "Subscribed" << std::endl;
+        // Set noise parameters
+        inekf::NoiseParams params;
+
+        //TODO: Initialize CheetahSystem
+        std::cout << "Before system initialization" << std::endl;
+        CheetahSystem *system = new CheetahSystem(&lcm, &cdata_mtx, &cheetah_input_data);
+        // system->setEstimator(std::make_shared<BodyEstimator>());
+        std::cout << "System initialized" << std::endl;
+        /// TODO: Listen/Respond Loop
+        bool received_data = true;
+
+        while (lcm.handle() == 0)
+        {
+            if (reinit_cmd) {
+                break;
+            }
+            system->step();
+        }
+
     }
-
-    // Threading
-    boost::mutex cdata_mtx;
-    cheetah_lcm_data_t cheetah_input_data;
-    std::cout << "check check" << std::endl;
-
-    cheetah_inekf_lcm::lcm_handler lcm_subscriber_node(&lcm, &cheetah_input_data, &cdata_mtx);
     
-    std::cout << "Subscribed" << std::endl;
-    // Set noise parameters
-    inekf::NoiseParams params;
-
-    //TODO: Initialize CheetahSystem
-    std::cout << "Before system initialization" << std::endl;
-    CheetahSystem *system = new CheetahSystem(&lcm, &cdata_mtx, &cheetah_input_data);
-    // system->setEstimator(std::make_shared<BodyEstimator>());
-    std::cout << "System initialized" << std::endl;
-    /// TODO: Listen/Respond Loop
-    bool received_data = true;
-    //we/ TODO:  ros spin
-    while (lcm.handle() == 0)
-    {
-        system->step();
-    }
-
     return 0;
 }

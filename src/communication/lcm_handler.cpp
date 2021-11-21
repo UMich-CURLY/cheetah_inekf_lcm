@@ -3,8 +3,8 @@
 
 namespace cheetah_inekf_lcm
 {
-    lcm_handler::lcm_handler(lcm::LCM* lcm, cheetah_lcm_data_t* cheetah_buffer, boost::mutex* cdata_mtx) : 
-        lcm_(lcm), cheetah_buffer_(cheetah_buffer), cdata_mtx_(cdata_mtx) {
+    lcm_handler::lcm_handler(lcm::LCM* lcm, cheetah_lcm_data_t* cheetah_buffer, boost::mutex* cdata_mtx, bool* reinit_cmd) : 
+        lcm_(lcm), cheetah_buffer_(cheetah_buffer), cdata_mtx_(cdata_mtx), reinit_cmd_(reinit_cmd) {
         
         assert(lcm_);  // confirm a nullptr wasn't passed in
 
@@ -19,7 +19,11 @@ namespace cheetah_inekf_lcm
         std::string lcm_leg_channel = config_setting["settings"]["lcm_leg_channel"] ? config_setting["settings"]["lcm_leg_channel"].as<std::string>() : "leg_control_data";
         std::string lcm_imu_channel = config_setting["settings"]["lcm_imu_channel"] ? config_setting["settings"]["lcm_imu_channel"].as<std::string>() : "microstrain";
         std::string contact_ground_truth = config_setting["settings"]["lcm_contact_est_channel"] ? config_setting["settings"]["lcm_contact_est_channel"].as<std::string>() : "wbc_lcm_data";
+        
         bool run_synced = config_setting["settings"]["run_synced"] ? config_setting["settings"]["run_synced"].as<bool>() : false;
+
+        std::string lcm_reinitialize_channel = config_setting["settings"]["lcm_reinitialize_channel"] ? config_setting["settings"]["lcm_reinitialize_channel"].as<std::string>() : "reinitialize_command";
+        lcm_->subscribe(lcm_reinitialize_channel, &cheetah_inekf_lcm::lcm_handler::receiveReinitializeMsg, this);
 
         if (!run_synced && mode == "normal")
         {
@@ -74,6 +78,14 @@ namespace cheetah_inekf_lcm
     }
 
     lcm_handler::~lcm_handler() {}
+
+    void lcm_handler::receiveReinitializeMsg(const lcm::ReceiveBuffer *rbuf,
+                                          const std::string &chan,
+                                          const reinitialization_lcmt *msg)
+    {
+        *reinit_cmd_ = msg->reinitialize_cmd;
+    }
+
 
     void lcm_handler::receiveLegControlMsg(const lcm::ReceiveBuffer *rbuf,
                                           const std::string &chan,

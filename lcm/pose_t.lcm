@@ -5,7 +5,14 @@ struct pose_t
     int64_t seq;
     double stamp;
     string frame_id;
+
     double position[3];
-    double rotation[3][3];
+    double roll;
+    double pitch;
+    double yaw;
+
     double velocity[3];
+    double droll;
+    double dpitch;
+    double dyaw;
 }

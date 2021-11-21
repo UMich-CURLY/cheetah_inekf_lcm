@@ -100,6 +100,10 @@ void BodyEstimator::update(cheetah_lcm_packet_t& cheetah_data, CheetahState& sta
     state.setBasePosition(p);
     state.setBaseVelocity(v); 
 
+    if (lcm_publish_visualization_markers_) {
+        publishPose(t_prev_, "/cheetah/imu", seq_, state);
+    }
+
     // Store previous imu data
     t_prev_ = t;
     imu_prev_ = imu;
@@ -165,35 +169,32 @@ void BodyEstimator::correctKinematics(CheetahState& state) {
                 position[1], 
                 position[2]);
     }
-    if (lcm_publish_visualization_markers_) {
-        publishPose(t_prev_, "/cheetah/imu", seq_);
-    }
+
 }
 
 // Publish current pose over lcm & and save to ros
-void BodyEstimator::publishPose(double time, std::string map_frame_id, uint32_t seq) {
+void BodyEstimator::publishPose(double time, std::string map_frame_id, uint32_t seq, CheetahState& state) {
     cheetah_inekf_lcm::pose_t pose;
     pose.seq = seq;
     pose.stamp = time;
     pose.frame_id = map_frame_id;
 
     // Get inekf pose estimate
-    inekf::RobotState estimate = filter_.getState();
-    Eigen::Vector3d position = estimate.getPosition();
-    Eigen::Matrix3d rotation = estimate.getRotation();
-    Eigen::Vector3d velocity = estimate.getVelocity();
-
     // Publish pose in LCM
     // std::cout << "Issue before read " << std::endl;
-    pose.position[0] = position(0); pose.position[1] = position(1); pose.position[2] = position(2);
-    pose.rotation[0][0] = rotation(0, 0); pose.rotation[0][1] = rotation(0, 1); pose.rotation[0][2] = rotation(0, 2);
-    pose.rotation[1][0] = rotation(1, 0); pose.rotation[1][1] = rotation(1, 1); pose.rotation[1][2] = rotation(1, 2);
-    pose.rotation[2][0] = rotation(2, 0); pose.rotation[2][1] = rotation(2, 1); pose.rotation[2][2] = rotation(2, 2);
+    pose.position[0] = state.x(); pose.position[1] = state.y(); pose.position[2] = state.z();
+    pose.roll = state.roll();
+    pose.pitch = state.pitch();
+    pose.yaw = state.yaw();
 
 
-    pose.velocity[0] = velocity(0);
-    pose.velocity[1] = velocity(1);
-    pose.velocity[2] = velocity(2);
+    pose.velocity[0] = state.dx();
+    pose.velocity[1] = state.dy();
+    pose.velocity[2] = state.dz();
+
+    pose.dyaw = state.dyaw();
+    pose.dpitch = state.dpitch();
+    pose.droll = state.droll();
 
     lcm_->publish(LCM_POSE_CHANNEL, &pose);
 }

@@ -761,6 +761,7 @@ CMakeFiles/cheetah_lcm_handler.dir/src/communication/lcm_handler.cpp.o: \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/leg_control_data_lcmt.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/wbc_test_data_t.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/synced_proprioceptive_lcmt.hpp \
+ /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/reinitialization_lcmt.hpp \
  /usr/include/boost/thread/condition.hpp \
  /usr/include/boost/thread/detail/config.hpp \
  /usr/include/boost/thread/detail/platform.hpp \

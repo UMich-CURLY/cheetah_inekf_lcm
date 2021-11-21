@@ -22,6 +22,7 @@ class CheetahState {
         CheetahState();
 //          CheetahState(const Eigen::Matrix<double,18,1>& q, const Eigen::Matrix<double,18,1>& dq, bool computeContacts = true);
         CheetahState(const cheetah_lcm_packet_t& cheetah_data);
+        ~CheetahState();
 
 //         void set(const Eigen::Matrix<double,18,1>& q, const Eigen::Matrix<double,18,1>& dq, bool computeContacts = true);
         void set(const cheetah_lcm_packet_t& cheetah_data);

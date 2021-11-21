@@ -34,7 +34,7 @@ class BodyEstimator {
         inekf::RobotState getState() const;
         void publishMarkers(double time, std::string map_frame_id, uint32_t seq);
         void publishPath();
-        void publishPose(double time, std::string map_frame_id, uint32_t seq);
+        void publishPose(double time, std::string map_frame_id, uint32_t seq, CheetahState& state);
 
     private:
         // LCM related

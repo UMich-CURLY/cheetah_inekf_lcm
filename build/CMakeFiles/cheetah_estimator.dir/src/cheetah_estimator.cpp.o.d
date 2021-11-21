@@ -776,6 +776,7 @@ CMakeFiles/cheetah_estimator.dir/src/cheetah_estimator.cpp.o: \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/leg_control_data_lcmt.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/wbc_test_data_t.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/synced_proprioceptive_lcmt.hpp \
+ /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/reinitialization_lcmt.hpp \
  /usr/include/boost/thread/condition.hpp \
  /usr/include/boost/thread/detail/config.hpp \
  /usr/include/boost/thread/detail/platform.hpp \
@@ -1094,7 +1095,6 @@ CMakeFiles/cheetah_estimator.dir/src/cheetah_estimator.cpp.o: \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/utils/utils.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/pose_t.hpp \
  /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/utils/PassiveTimeSync.h \
- /home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/include/communication/lcm-types/cheetah_inekf_lcm/pose_lcmt.hpp \
  /usr/include/boost/algorithm/string.hpp \
  /usr/include/boost/algorithm/string/std_containers_traits.hpp \
  /usr/include/boost/algorithm/string/std/string_traits.hpp \
