@@ -44,24 +44,24 @@ int main(int argc, char **argv)
         // Threading
         boost::mutex cdata_mtx;
         cheetah_lcm_data_t cheetah_input_data;
-        std::cout << "check check" << std::endl;
         bool reinit_cmd = false;
-        cheetah_inekf_lcm::lcm_handler lcm_subscriber_node(&lcm, &cheetah_input_data, &cdata_mtx, &reinit_cmd);
         
-        std::cout << "Subscribed" << std::endl;
+        std::cout << "Subscribing to LCM channels" << std::endl;
+        cheetah_inekf_lcm::lcm_handler lcm_subscriber_node(&lcm, &cheetah_input_data, &cdata_mtx, &reinit_cmd);
+        std::cout << "Subscribed to LCM channels" << std::endl;
+        
         // Set noise parameters
         inekf::NoiseParams params;
 
-        //TODO: Initialize CheetahSystem
-        std::cout << "Before system initialization" << std::endl;
+        // Initialize CheetahSystem
+        std::cout << "Initializing Cheetah System" << std::endl;
         CheetahSystem *system = new CheetahSystem(&lcm, &cdata_mtx, &cheetah_input_data);
         // system->setEstimator(std::make_shared<BodyEstimator>());
-        std::cout << "System initialized" << std::endl;
-        /// TODO: Listen/Respond Loop
-        bool received_data = true;
+        std::cout << "Cheetah System is initialized" << std::endl;
 
         while (lcm.handle() == 0)
         {
+            // Reinitialize the whole system if receive reinitialize command:
             if (reinit_cmd) {
                 break;
             }

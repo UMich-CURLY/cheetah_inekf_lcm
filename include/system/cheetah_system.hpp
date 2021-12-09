@@ -25,6 +25,8 @@ class CheetahSystem {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         // Default Contructor
         CheetahSystem(lcm::LCM* lcm, boost::mutex* cdata_mtx, cheetah_lcm_data_t* cheetah_buffer);
+        // Destructor
+        ~CheetahSystem();
         // Step forward one iteration of the system
         void step();
 
@@ -49,8 +51,14 @@ class CheetahSystem {
         // Publish output path
         void poseCallback(const CheetahState& state_);
         // Output file
-        std::string file_name_;
-        std::string tum_file_name_;
+        // std::string kitti_file_name_;
+        // std::string tum_file_name_;
+
+        std::ofstream kitti_outfile;
+        std::ofstream tum_outfile;
+        int pose_record_step_size;
+        int step_size_count;
+        
         // Publish path node enable flag
         bool enable_pose_publisher_;
 };

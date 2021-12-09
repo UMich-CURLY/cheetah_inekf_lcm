@@ -15,7 +15,7 @@ BodyEstimator::BodyEstimator(lcm::LCM* lcm) :
     // Create private node handle
     // Set debug output
     char resolved_path[PATH_MAX];
-    realpath("../", resolved_path);
+    char* p = realpath("../", resolved_path);
     std::cout << resolved_path << std::endl;
     config_setting = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
 

@@ -14,24 +14,32 @@ CheetahSystem::CheetahSystem(lcm::LCM* lcm, boost::mutex* cdata_mtx, cheetah_lcm
     std::cout << "Ready to read Yaml" << std::endl;
     // Yaml file:
     char resolved_path[PATH_MAX];
-    realpath("../", resolved_path);
+    char* p = realpath("../", resolved_path);
     std::cout << resolved_path << std::endl;
     YAML::Node config_ = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
 
     // Initialize inekf pose file printouts
-    std::cout << "Ready to read inekf pose file names" << std::endl;
-    std::string file_name_ = config_["settings"]["system_inekf_pose_filename"].as<std::string>();
-    std::cout << "Ready to read tum inekf pose file names" << std::endl;
+    std::cout << "Reading inekf pose file names" << std::endl;
+    std::string kitti_file_name_ = config_["settings"]["system_inekf_pose_filename"].as<std::string>();
+    std::cout << "Reading tum inekf pose file names" << std::endl;
     std::string tum_file_name_ = config_["settings"]["system_inekf_tum_pose_filename"].as<std::string>();
     // Initialize pose publishing if requested
-    std::cout << "Ready to read enable_publisher" << std::endl;
-    bool enable_pose_publisher_ = config_["settings"]["system_enable_pose_publisher"].as<bool>();
+    std::cout << "Check enable_publisher: ";
+    enable_pose_publisher_ = config_["settings"]["system_enable_pose_publisher"].as<bool>();
+    std::cout << std::boolalpha << enable_pose_publisher_ << std::endl;
+
+    // Define pose record step size for output files:
+    pose_record_step_size = config_["settings"]["pose_record_step_size"].as<int>();
+    step_size_count = 0;
+
+    kitti_outfile.open(kitti_file_name_, std::ofstream::out | std::ofstream::app);
+    tum_outfile.open(tum_file_name_, std::ofstream::out | std::ofstream::app);
     
-    std::ofstream outfile(file_name_);
-    std::ofstream tum_outfile(tum_file_name_);
-    outfile.close();
+}
+
+CheetahSystem::~CheetahSystem() {
+    kitti_outfile.close();
     tum_outfile.close();
-    std::cout << "Cheetah System Initialized" << std::endl;
 }
 
 void CheetahSystem::step() {
@@ -47,7 +55,6 @@ void CheetahSystem::step() {
             estimator_.update(cheetah_packet_, state_);
 
             if (enable_pose_publisher_) {
-                // pose_publisher_node_.posePublish(state_);
                 poseCallback(state_);
             }
 
@@ -64,18 +71,20 @@ void CheetahSystem::step() {
 }
 
 void CheetahSystem::poseCallback(const CheetahState& state_) {
-    if (file_name_.size() > 0) {
-        // ROS_INFO_STREAM("write new pose\n");
-        // std::cout << "Write a new pose" << std::endl;
-        std::ofstream outfile(file_name_,std::ofstream::out | std::ofstream::app );
-        outfile << "1 0 0 "<< state_.x() <<" 0 1 0 "<< state_.y() <<" 0 0 1 "<< state_.z() <<std::endl<<std::flush;
-        outfile.close();
+    
+    if (step_size_count++ == pose_record_step_size) {
+        // Writing new pose:
+        // kitti style:
+        // std::ofstream kitti_outfile(kitti_file_name_,std::ofstream::out | std::ofstream::app );
+        kitti_outfile << "1 0 0 "<< state_.x() <<" 0 1 0 "<< state_.y() <<" 0 0 1 "<< state_.z() <<std::endl<<std::flush;
+        // outfile.close();
+        
         // tum style
-        std::ofstream tum_outfile(tum_file_name_,std::ofstream::out | std::ofstream::app );
+        // std::ofstream tum_outfile(tum_file_name_,std::ofstream::out | std::ofstream::app );
         tum_outfile << cheetah_packet_.getTime() << " "<< state_.x()<<" "<< state_.y() << " "<<state_.z() << " "<<state_.getQuaternion().x()\
         <<" "<< state_.getQuaternion().y() <<" "<< state_.getQuaternion().z() <<" "<< state_.getQuaternion().w() <<std::endl<<std::flush;
-        
-        tum_outfile.close();
+        // tum_outfile.close();
+        step_size_count = 0;
     }
 }
 
