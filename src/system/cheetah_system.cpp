@@ -32,8 +32,8 @@ CheetahSystem::CheetahSystem(lcm::LCM* lcm, boost::mutex* cdata_mtx, cheetah_lcm
     pose_record_step_size = config_["settings"]["pose_record_step_size"].as<int>();
     step_size_count = 0;
 
-    kitti_outfile.open(kitti_file_name_, std::ofstream::out | std::ofstream::app);
-    tum_outfile.open(tum_file_name_, std::ofstream::out | std::ofstream::app);
+    kitti_outfile.open(kitti_file_name_, std::ofstream::out);
+    tum_outfile.open(tum_file_name_, std::ofstream::out);
     
 }
 
