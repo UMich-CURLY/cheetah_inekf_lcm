@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcheetah_system.a CMakeFiles/cheetah_system.dir/src/system/cheetah_system.cpp.o
-/usr/bin/ranlib libcheetah_system.a

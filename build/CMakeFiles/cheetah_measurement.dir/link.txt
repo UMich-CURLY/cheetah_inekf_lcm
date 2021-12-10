@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcheetah_measurement.a CMakeFiles/cheetah_measurement.dir/src/utils/measurement.cpp.o
-/usr/bin/ranlib libcheetah_measurement.a

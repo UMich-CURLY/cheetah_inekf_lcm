@@ -1,2 +1,0 @@
-/usr/bin/ar qc libbody_estimator.a CMakeFiles/body_estimator.dir/src/estimator/body_estimator.cpp.o
-/usr/bin/ranlib libbody_estimator.a

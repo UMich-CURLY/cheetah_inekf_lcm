@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcheetah_lcm_handler.a CMakeFiles/cheetah_lcm_handler.dir/src/communication/lcm_handler.cpp.o
-/usr/bin/ranlib libcheetah_lcm_handler.a
