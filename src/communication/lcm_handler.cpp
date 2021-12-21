@@ -167,6 +167,7 @@ namespace cheetah_inekf_lcm
         cheetah_buffer_->contact_q.push(contact_ptr);
     }
 
+    // synchronized version (works if and only if you already have a set of synchronized messages):
     void lcm_handler::synced_msgs_lcm_callback(const lcm::ReceiveBuffer *rbuf,
                                                             const std::string &channel_name,
                                                             const synced_proprioceptive_lcmt *msg)
@@ -200,7 +201,6 @@ namespace cheetah_inekf_lcm
 
         /// CONTACTS:
         Eigen::Matrix<bool, 4, 1> contacts;
-        std::cout << 1 << std::endl;
         for (int i = 0; i < msg->num_legs; ++i)
         {
             std::cout << msg->contact[i];

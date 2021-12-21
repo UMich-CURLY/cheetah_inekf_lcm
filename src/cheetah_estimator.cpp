@@ -12,7 +12,7 @@
 #include <string>
 #include <memory>
 #include <iostream>
-
+#include <chrono>
 #include "utils/cheetah_data_t.hpp"
 #include "communication/lcm_handler.hpp"
 #include "system/cheetah_system.hpp"
@@ -26,6 +26,7 @@
 #include <boost/circular_buffer.hpp>
 
 #define LCM_MULTICAST_URL "udpm://239.255.76.67:7667?ttl=2"
+using namespace std::chrono;
 
 
 
@@ -59,13 +60,22 @@ int main(int argc, char **argv)
         // system->setEstimator(std::make_shared<BodyEstimator>());
         std::cout << "Cheetah System is initialized" << std::endl;
 
+        auto start = high_resolution_clock::now();
+        auto stop = high_resolution_clock::now();
+
         while (lcm.handle() == 0)
         {
             // Reinitialize the whole system if receive reinitialize command:
+            stop = high_resolution_clock::now(); 
+
             if (reinit_cmd) {
                 break;
             }
+            
             system->step();
+            auto duration = duration_cast<microseconds>(stop - start);
+            std::cout << "Frequency: " << (double) (1000000.0 / duration.count()) << "Hz" << std::endl;
+            start = high_resolution_clock::now();
         }
 
     }
