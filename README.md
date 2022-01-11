@@ -2,17 +2,21 @@
 This project is the wrapper of invariant-ekf for MiniCheetah. It takes input from LCM/UDP, and performs EKF update on IMU-contact odometry. 
 
 ## Configuring yaml settings files
-0. Create a new file in `config/` called `settings.yaml` and copy paste all the lines from `config/settings_template.yaml` to `config/settings.yaml`. `config/settings.yaml` is not tracked by git, so it will be convenient if you need to work on different computers to test the code and don't want to change the paths everytime.
-1. Change `lcm_enable_debug_output` param in `config/settings.yaml` to `false` if no debug output is wanted for receiving lcm messages
-2. Change `project_root_dir` param in `config/settings.yaml` to filepath to your installation directory for this repo
-3. Change `estimator_enable_debug` param in `config/settings.yaml` to `true` if you want to view the state of the inekf in the terminal while it is running
-4. Change `estimator_publish_visualization_markers` param in `config/settings.yaml` to `true` if you want to publish the robot pose over LCM channel "LCM_POSE_CHANNEL"
-5. Change `estimator_lcm_pose_channel` param in `config/settings.yaml` to `true` if you want to change the name of the LCM channel that the robot pose is published over
-6. Change `estimator_static_bias_initialization` param in `config/settings.yaml` to `true` if you want to initialize static bias for the IMU 
-7. Change `system_enable_pose_publisher` param in `config/settings.yaml` to `true` if you want to save the robot pose to file and publish the robot pose over ROS
-8. Change `system_inekf_pose_filename` and `system_inekf_tum_pose_filename` params in `config/settings.yaml` to a different filepath to specify which files you would like the robot poses to be saved to (the second is a tum syntax)
-9. Change `run_synced` params in config/settings.yaml to `true` if you have a synced message channel that contains contact estimation results; Otherwise, leave it as `false`
-10. Change all `lcm_*_channel` params in config/settings.yaml to the corresponding channels your robot is publishing
+Create a new file in `config/` called `settings.yaml` and copy paste all the lines from `config/settings_template.yaml` to `config/settings.yaml`. `config/settings.yaml` is not tracked by git, so it will be convenient if you need to work on different computers to test the code and don't want to change the paths everytime.
+### In `config/settings.yaml`:
+1. Change `lcm_enable_debug_output` to `false` if no debug output is wanted for receiving lcm messages
+2. Change `project_root_dir` to filepath to your installation directory for this repo
+3. Change `estimator_enable_debug` to `true` if you want to view the state of the inekf in the terminal while it is running
+4. Change `estimator_publish_visualization_markers` to `true` if you want to publish the robot pose over LCM channel "LCM_POSE_CHANNEL"
+5. Change `estimator_lcm_pose_channel` to `true` if you want to change the name of the LCM channel that the robot pose is published over
+6. Change `estimator_static_bias_initialization` to `true` if you want to initialize static bias for the IMU 
+7. Change `system_enable_pose_publisher` to `true` if you want to save the robot pose to file and publish the robot pose over ROS
+8. Change `system_inekf_pose_filename` and `system_inekf_tum_pose_filename` to different filepaths to specify which files you would like the robot poses (paths) to be saved to (the second is a tum syntax)
+9. Change `run_synced` to `true` if you have a synced message channel that contains contact estimation results; Otherwise, leave it as `false`
+10. Change all `lcm_*_channel` to the corresponding channels your robot is publishing
+
+### In other `.yaml` files:
+Change the parameters to the values you know or you want to test with.
 
 ## Build and run the program:
 1. cd to the downloaded folder and run the following commands:
@@ -27,11 +31,12 @@ make -j2
 ./cheetah_estimator
 ```
 3. Use `lcm-logplayer-gui` to play the recorded lcm messages from the robot, or try the code on the mini-cheetah robot!
-## Get data for testing:
+
+## Try the demo data for testing:
 
 
 ## Some helpful functions :
-1. Two formats of path *.txt* file will be saved. One is in kitti format, and the other is in tum format. You can use (evo)[https://github.com/MichaelGrupp/evo] to visualize the result. The command will be like:
+1. Two formats of path *.txt* file will be saved. One is in kitti format, and the other is in tum format. You can use [evo](https://github.com/MichaelGrupp/evo) to visualize the result. The command will be like:
 ```
 evo_traj tum *_tum.txt -p   
 ```
