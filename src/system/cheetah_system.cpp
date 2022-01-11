@@ -74,16 +74,11 @@ void CheetahSystem::poseCallback(const CheetahState& state_) {
     
     if (step_size_count++ == pose_record_step_size) {
         // Writing new pose:
-        // kitti style:
-        // std::ofstream kitti_outfile(kitti_file_name_,std::ofstream::out | std::ofstream::app );
         kitti_outfile << "1 0 0 "<< state_.x() <<" 0 1 0 "<< state_.y() <<" 0 0 1 "<< state_.z() <<std::endl<<std::flush;
-        // outfile.close();
         
         // tum style
-        // std::ofstream tum_outfile(tum_file_name_,std::ofstream::out | std::ofstream::app );
         tum_outfile << cheetah_packet_.getTime() << " "<< state_.x()<<" "<< state_.y() << " "<<state_.z() << " "<<state_.getQuaternion().x()\
         <<" "<< state_.getQuaternion().y() <<" "<< state_.getQuaternion().z() <<" "<< state_.getQuaternion().w() <<std::endl<<std::flush;
-        // tum_outfile.close();
         step_size_count = 0;
     }
 }
