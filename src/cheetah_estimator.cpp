@@ -66,13 +66,14 @@ int main(int argc, char **argv)
         while (lcm.handle() == 0)
         {
             // Reinitialize the whole system if receive reinitialize command:
-            stop = high_resolution_clock::now(); 
 
             if (reinit_cmd) {
                 break;
             }
             
             system->step();
+            stop = high_resolution_clock::now(); 
+
             auto duration = duration_cast<microseconds>(stop - start);
             std::cout << "Frequency: " << (double) (1000000.0 / duration.count()) << "Hz" << std::endl;
             start = high_resolution_clock::now();

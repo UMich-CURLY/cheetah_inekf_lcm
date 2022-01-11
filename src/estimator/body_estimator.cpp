@@ -25,31 +25,31 @@ BodyEstimator::BodyEstimator(lcm::LCM* lcm) :
     static_bias_initialization_ = config_setting["settings"]["estimator_static_bias_initialization"] ? config_setting["settings"]["estimator_static_bias_initialization"].as<bool>() : false;
 
     inekf::NoiseParams params;
-    double std;
+    double temp_param;
     config_noise = YAML::LoadFile(std::string(resolved_path) + "/config/noise.yaml");
     
     std::cout << "Hello: " << config_noise["noise"]["gyroscope_std"].as<double>() << std::endl;
 
     if (config_noise["noise"]["gyroscope_std"]) { 
-        std = config_noise["noise"]["gyroscope_std"].as<double>();
-        params.setGyroscopeNoise(std);
+        temp_param = config_noise["noise"]["gyroscope_std"].as<double>();
+        params.setGyroscopeNoise(temp_param);
     }
     if (config_noise["noise"]["accelerometer_std"]) { 
-        std = config_noise["noise"]["accelerometer_std"].as<double>();
+        temp_param = config_noise["noise"]["accelerometer_std"].as<double>();
 
-        params.setAccelerometerNoise(std);
+        params.setAccelerometerNoise(temp_param);
     }
     if (config_noise["noise"]["gyroscope_bias_std"]) { 
-        std = config_noise["noise"]["gyroscope_bias_std"].as<double>();
-        params.setGyroscopeBiasNoise(std);
+        temp_param = config_noise["noise"]["gyroscope_bias_std"].as<double>();
+        params.setGyroscopeBiasNoise(temp_param);
     }
     if (config_noise["noise"]["accelerometer_bias_std"]) { 
-        std = config_noise["noise"]["accelerometer_bias_std"].as<double>();
-        params.setAccelerometerBiasNoise(std);
+        temp_param = config_noise["noise"]["accelerometer_bias_std"].as<double>();
+        params.setAccelerometerBiasNoise(temp_param);
     }
     if (config_noise["noise"]["contact_std"]) { 
-        std = config_noise["noise"]["contact_std"].as<double>();
-        params.setContactNoise(std);
+        temp_param = config_noise["noise"]["contact_std"].as<double>();
+        params.setContactNoise(temp_param);
     }
 
     filter_.setNoiseParams(params);

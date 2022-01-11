@@ -9,7 +9,7 @@ namespace cheetah_inekf_lcm
         assert(lcm_);  // confirm a nullptr wasn't passed in
 
         char resolved_path[PATH_MAX];
-        realpath("../", resolved_path);
+        char* p = realpath("../", resolved_path);
         std::cout << resolved_path << std::endl;
         config_setting = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
         config_inekf = YAML::LoadFile(std::string(resolved_path) + "/config/inekf.yaml");
@@ -18,7 +18,7 @@ namespace cheetah_inekf_lcm
         std::string mode = config_setting["settings"]["mode"] ? config_setting["settings"]["mode"].as<std::string>() : "normal";
         std::string lcm_leg_channel = config_setting["settings"]["lcm_leg_channel"] ? config_setting["settings"]["lcm_leg_channel"].as<std::string>() : "leg_control_data";
         std::string lcm_imu_channel = config_setting["settings"]["lcm_imu_channel"] ? config_setting["settings"]["lcm_imu_channel"].as<std::string>() : "microstrain";
-        std::string contact_ground_truth = config_setting["settings"]["lcm_contact_est_channel"] ? config_setting["settings"]["lcm_contact_est_channel"].as<std::string>() : "wbc_lcm_data";
+        std::string lcm_contact_channel = config_setting["settings"]["lcm_contact_est_channel"] ? config_setting["settings"]["lcm_contact_est_channel"].as<std::string>() : "wbc_lcm_data";
         
         bool run_synced = config_setting["settings"]["run_synced"] ? config_setting["settings"]["run_synced"].as<bool>() : false;
 
@@ -29,7 +29,7 @@ namespace cheetah_inekf_lcm
         {
             lcm_->subscribe(lcm_leg_channel, &cheetah_inekf_lcm::lcm_handler::receiveLegControlMsg, this);
             lcm_->subscribe(lcm_imu_channel, &cheetah_inekf_lcm::lcm_handler::receiveMicrostrainMsg, this);
-            lcm_->subscribe(contact_ground_truth, &cheetah_inekf_lcm::lcm_handler::receiveContactGroundTruthMsg, this);
+            lcm_->subscribe(lcm_contact_channel, &cheetah_inekf_lcm::lcm_handler::receiveContactMsg, this);
         }
 
         /// SYNCED:
@@ -59,7 +59,7 @@ namespace cheetah_inekf_lcm
         encoder_std = config_inekf["inekf"]["encoder_std"] ? config_inekf["inekf"]["encoder_std"].as<double>() : 0.0174533;
         kinematic_prior_orientation_std = config_inekf["inekf"]["kinematic_prior_orientation_std"] ? config_inekf["inekf"]["kinematic_prior_orientation_std"].as<double>() : 0.174533;
         kinematic_prior_position_std = config_inekf["inekf"]["kinematic_prior_position_std"] ? config_inekf["inekf"]["kinematic_prior_position_std"].as<double>() : 0.05;
-        debug_enabled_ = config_setting["inekf"]["lcm_enable_debug_output"] ? config_setting["inekf"]["lcm_enable_debug_output"].as<bool>() : false;
+        debug_enabled_ = config_setting["inekf"]["lcm_enable_debug_output"] ? config_setting["inekf"]["lcm_enable_debug_output"].as<bool>()  : false;
         project_root_dir = config_setting["inekf"]["project_root_dir"] ? config_setting["inekf"]["project_root_dir"].as<std::string>() : "../../../";
 
 
@@ -147,7 +147,7 @@ namespace cheetah_inekf_lcm
 
     }
 
-    void lcm_handler::receiveContactGroundTruthMsg(const lcm::ReceiveBuffer *rbuf,
+    void lcm_handler::receiveContactMsg(const lcm::ReceiveBuffer *rbuf,
                                                 const std::string &chan,
                                                 const wbc_test_data_t *msg)
     {
@@ -221,5 +221,5 @@ namespace cheetah_inekf_lcm
 
 } // mini_cheetah
 
-// template class cheetah_inekf_lcm::KinematicsHandler<12>;
+// template class cheetah_inekf_lcm::KinematicsHandler;
 // template class cheetah_inekf_lcm::lcm_handler;

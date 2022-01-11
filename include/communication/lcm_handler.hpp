@@ -66,7 +66,7 @@ class lcm_handler {
                                             const std::string &chan,
                                             const microstrain_lcmt *msg);         
 
-    void receiveContactGroundTruthMsg(const lcm::ReceiveBuffer *rbuf,
+    void receiveContactMsg(const lcm::ReceiveBuffer *rbuf,
                                                 const std::string &chan,
                                                 const wbc_test_data_t *msg);                                                       
   private:
