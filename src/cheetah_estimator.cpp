@@ -60,8 +60,8 @@ int main(int argc, char **argv)
         // system->setEstimator(std::make_shared<BodyEstimator>());
         std::cout << "Cheetah System is initialized" << std::endl;
 
-        auto start = high_resolution_clock::now();
-        auto stop = high_resolution_clock::now();
+        // auto start = high_resolution_clock::now();
+        // auto stop = high_resolution_clock::now();
 
         while (lcm.handle() == 0)
         {
@@ -72,11 +72,10 @@ int main(int argc, char **argv)
             }
             
             system->step();
-            stop = high_resolution_clock::now(); 
-
-            auto duration = duration_cast<microseconds>(stop - start);
-            std::cout << "Frequency: " << (double) (1000000.0 / duration.count()) << "Hz" << std::endl;
-            start = high_resolution_clock::now();
+            // stop = high_resolution_clock::now(); 
+            // auto duration = duration_cast<microseconds>(stop - start);
+            // std::cout << "Frequency: " << (double) (1000000.0 / duration.count()) << "Hz" << std::endl;
+            // start = high_resolution_clock::now();
         }
 
     }
