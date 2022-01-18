@@ -10,7 +10,6 @@ namespace cheetah_inekf_lcm
 
         char resolved_path[PATH_MAX];
         char* p = realpath("../", resolved_path);
-        std::cout << resolved_path << std::endl;
         config_setting = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
         config_inekf = YAML::LoadFile(std::string(resolved_path) + "/config/inekf.yaml");
 
@@ -54,26 +53,15 @@ namespace cheetah_inekf_lcm
 
         //Set private variables
         double encoder_std, kinematic_prior_orientation_std, kinematic_prior_position_std;
-        std::string project_root_dir;
 
         encoder_std = config_inekf["inekf"]["encoder_std"] ? config_inekf["inekf"]["encoder_std"].as<double>() : 0.0174533;
         kinematic_prior_orientation_std = config_inekf["inekf"]["kinematic_prior_orientation_std"] ? config_inekf["inekf"]["kinematic_prior_orientation_std"].as<double>() : 0.174533;
         kinematic_prior_position_std = config_inekf["inekf"]["kinematic_prior_position_std"] ? config_inekf["inekf"]["kinematic_prior_position_std"].as<double>() : 0.05;
-        debug_enabled_ = config_setting["inekf"]["lcm_enable_debug_output"] ? config_setting["inekf"]["lcm_enable_debug_output"].as<bool>()  : false;
-        project_root_dir = config_setting["inekf"]["project_root_dir"] ? config_setting["inekf"]["project_root_dir"].as<std::string>() : "../../../";
-
 
         cov_encoders_ = encoder_std*encoder_std*Eigen::Matrix<double,12,12>::Identity(); 
         cov_prior_ = Eigen::Matrix<double,6,6>::Identity();
         cov_prior_.block<3,3>(0,0) = kinematic_prior_orientation_std*kinematic_prior_orientation_std*Eigen::Matrix<double,3,3>::Identity();
         cov_prior_.block<3,3>(3,3) = kinematic_prior_position_std*kinematic_prior_position_std*Eigen::Matrix<double,3,3>::Identity();
-
-        // ROS_INFO("Cheetah_Lcm initialized."); 
-        if (debug_enabled_) {
-            std::cout << project_root_dir << "/tests/kinematics/lcmlog.out" << '\n';
-            kinematics_debug_.open(project_root_dir + "/tests/kinematics/lcmlog.out");
-            assert(kinematics_debug_.is_open());
-        }
 
     }
 
@@ -173,7 +161,7 @@ namespace cheetah_inekf_lcm
                                                             const synced_proprioceptive_lcmt *msg)
     {
         // ROS_DEBUG_STREAM("Receive new synchronized msg");
-        std::cout << "Receive new synchronized msg" << std::endl;
+        // std::cout << "Receive new synchronized msg" << std::endl;
         seq_joint_state_++;
         std::shared_ptr<ImuMeasurement<double>> imu_measurement_ptr = std::shared_ptr<ImuMeasurement<double>>(new ImuMeasurement<double>);
         std::shared_ptr<JointStateMeasurement> joint_state_ptr = std::shared_ptr<JointStateMeasurement>(new JointStateMeasurement(q_dim));
@@ -203,10 +191,10 @@ namespace cheetah_inekf_lcm
         Eigen::Matrix<bool, 4, 1> contacts;
         for (int i = 0; i < msg->num_legs; ++i)
         {
-            std::cout << msg->contact[i];
+            // std::cout << msg->contact[i];
             contacts[i] = msg->contact[i];
         }
-        std::cout << std::endl;
+        // std::cout << std::endl;
         // std::cout << "Corresponding contacts: " << contacts[0] << contacts[1] << contacts[2] << contacts[3] << std::endl;
 
         contact_ptr->setContacts(contacts);

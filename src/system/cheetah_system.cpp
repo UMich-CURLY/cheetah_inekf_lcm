@@ -11,35 +11,44 @@
 CheetahSystem::CheetahSystem(lcm::LCM* lcm, boost::mutex* cdata_mtx, cheetah_lcm_data_t* cheetah_buffer): 
     lcm_(lcm), ts_(0.05, 0.05), cheetah_buffer_(cheetah_buffer), cdata_mtx_(cdata_mtx), estimator_(lcm) {
     
-    std::cout << "Ready to read Yaml" << std::endl;
+    // std::cout << "Ready to read Yaml" << std::endl;
     // Yaml file:
     char resolved_path[PATH_MAX];
     char* p = realpath("../", resolved_path);
-    std::cout << resolved_path << std::endl;
+    // std::cout << resolved_path << std::endl;
     YAML::Node config_ = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
 
     // Initialize inekf pose file printouts
-    std::cout << "Reading inekf pose file names" << std::endl;
-    std::string kitti_file_name_ = config_["settings"]["system_inekf_pose_filename"].as<std::string>();
-    std::cout << "Reading tum inekf pose file names" << std::endl;
-    std::string tum_file_name_ = config_["settings"]["system_inekf_tum_pose_filename"].as<std::string>();
     // Initialize pose publishing if requested
-    std::cout << "Check enable_publisher: ";
-    enable_pose_publisher_ = config_["settings"]["system_enable_pose_publisher"].as<bool>();
-    std::cout << std::boolalpha << enable_pose_publisher_ << std::endl;
+    enable_pose_log_txt_ = config_["settings"]["system_enable_pose_log_txt"] ? config_["settings"]["system_enable_pose_log_txt"].as<bool>() : false;
+    std::string kitti_file_name_ = config_["settings"]["system_inekf_kitti_pose_filename"].as<std::string>();
+    std::string tum_file_name_ = config_["settings"]["system_inekf_tum_pose_filename"].as<std::string>();
+    pose_record_step_size_ = config_["settings"]["system_pose_record_step_size"] ? config_["settings"]["system_pose_record_step_size"].as<int>() : 1;
+    
+    std::cout << "----Cheetah System Coniguration----"<<std::endl;
+    std::cout << "system_enable_pose_log_txt: " << std::boolalpha << enable_pose_log_txt_ << std::endl;
+    std::cout << "system_pose_record_step_size: "<<pose_record_step_size_<<std::endl;
+    std::cout << "system_inekf_kitti_pose_filename: "<<kitti_file_name_<<std::endl;
+    std::cout << "system_inekf_tum_pose_filename: "<<tum_file_name_<<std::endl;
+    std::cout << "-----------------------------------"<<std::endl;
 
-    // Define pose record step size for output files:
-    pose_record_step_size = config_["settings"]["pose_record_step_size"].as<int>();
-    step_size_count = 0;
 
-    kitti_outfile.open(kitti_file_name_, std::ofstream::out);
-    tum_outfile.open(tum_file_name_, std::ofstream::out);
+    
+    step_size_count_ = 0;
+
+    if(enable_pose_log_txt_){
+        kitti_outfile_.open(kitti_file_name_, std::ofstream::out);
+        tum_outfile_.open(tum_file_name_, std::ofstream::out);
+    }
     
 }
 
 CheetahSystem::~CheetahSystem() {
-    kitti_outfile.close();
-    tum_outfile.close();
+    if(enable_pose_log_txt_){
+        kitti_outfile_.close();
+        tum_outfile_.close();
+    }
+    
 }
 
 void CheetahSystem::step() {
@@ -54,12 +63,11 @@ void CheetahSystem::step() {
             // estimator.update propagate and correct (if contact exists) the filter
             estimator_.update(cheetah_packet_, state_);
 
-            if (enable_pose_publisher_) {
+            if (enable_pose_log_txt_) {
                 poseCallback(state_);
             }
 
         } else {
-            std::cout << "Initialized initState" << std::endl;
             if (estimator_.biasInitialized()) {
                 estimator_.initState(cheetah_packet_.getTime(), cheetah_packet_, state_);
                 estimator_.enableFilter();
@@ -72,14 +80,14 @@ void CheetahSystem::step() {
 
 void CheetahSystem::poseCallback(const CheetahState& state_) {
     
-    if (step_size_count++ == pose_record_step_size) {
+    if (step_size_count_++ == pose_record_step_size_) {
         // Writing new pose:
-        kitti_outfile << "1 0 0 "<< state_.x() <<" 0 1 0 "<< state_.y() <<" 0 0 1 "<< state_.z() <<std::endl<<std::flush;
+        kitti_outfile_ << "1 0 0 "<< state_.x() <<" 0 1 0 "<< state_.y() <<" 0 0 1 "<< state_.z() <<std::endl<<std::flush;
         
         // tum style
-        tum_outfile << cheetah_packet_.getTime() << " "<< state_.x()<<" "<< state_.y() << " "<<state_.z() << " "<<state_.getQuaternion().x()\
+        tum_outfile_ << cheetah_packet_.getTime() << " "<< state_.x()<<" "<< state_.y() << " "<<state_.z() << " "<<state_.getQuaternion().x()\
         <<" "<< state_.getQuaternion().y() <<" "<< state_.getQuaternion().z() <<" "<< state_.getQuaternion().w() <<std::endl<<std::flush;
-        step_size_count = 0;
+        step_size_count_ = 0;
     }
 }
 

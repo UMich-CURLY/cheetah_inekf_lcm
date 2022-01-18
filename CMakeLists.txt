@@ -30,11 +30,11 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 message("EIGEN3_INCLUDE_DIR: " ${EIGEN3_INCLUDE_DIR})
 
 # InEKF 
-find_package(inekf REQUIRED)
-include_directories(${inekf_INCLUDE_DIRS})
-message("inekf_INCLUDE_DIR: " ${inekf_INCLUDE_DIRS})
-link_directories(${inekf_LIBRARY_DIRS})
-message("inekf_LIBRARY_DIRS: " ${inekf_LIBRARY_DIRS})
+# find_package(inekf REQUIRED)
+# include_directories(${inekf_INCLUDE_DIRS})
+# message("inekf_INCLUDE_DIR: " ${inekf_INCLUDE_DIRS})
+# link_directories(${inekf_LIBRARY_DIRS})
+# message("inekf_LIBRARY_DIRS: " ${inekf_LIBRARY_DIRS})
 
 # Boost
 find_package(Boost 1.58 REQUIRED COMPONENTS system)
@@ -105,6 +105,12 @@ file(GLOB kinematics_src
     "${PROJECT_SOURCE_DIR}/src/kin/*.cpp"
 )
 
+
+file(GLOB inekf_core
+  "${PROJECT_SOURCE_DIR}/src/core/*.cpp"
+)
+add_library(inekf_core ${inekf_core})
+
 add_library(cheetah_lcm_handler "${PROJECT_SOURCE_DIR}/src/communication/lcm_handler.cpp")
 
 add_library(cheetah_measurement "${PROJECT_SOURCE_DIR}/src/utils/measurement.cpp")
@@ -119,14 +125,14 @@ add_library(utils "${PROJECT_SOURCE_DIR}/src/utils/utils.cpp")
 
 add_library(cheetah_kinematics_lcm ${kinematics_src})
 
-
 add_executable(cheetah_estimator "${PROJECT_SOURCE_DIR}/src/cheetah_estimator.cpp" )
 target_link_libraries(cheetah_estimator
-    ${inekf_LIBRARIES}
+    # ${inekf_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Yaml_cpp_LIBRARY}
     # yaml-cpp
     ${LCM_LIBRARY}
+    inekf_core
     cheetah_measurement
     utils
     cheetah_kinematics_lcm
@@ -138,29 +144,32 @@ target_link_libraries(cheetah_estimator
 )
 
 target_link_libraries(cheetah_state
-    ${inekf_LIBRARIES}
+    # ${inekf_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Yaml_cpp_LIBRARY}
     # yaml-cpp
+    inekf_core
     cheetah_kinematics_lcm
     cheetah_measurement
     utils
 )
 
 target_link_libraries(body_estimator
-    ${inekf_LIBRARIES}
+    # ${inekf_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Yaml_cpp_LIBRARY}
     # yaml-cpp
+    inekf_core
     cheetah_measurement
     utils
 )
 
 target_link_libraries(cheetah_system
-    ${inekf_LIBRARIES}
+    # ${inekf_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Yaml_cpp_LIBRARY}
     # yaml-cpp
+    inekf_core
     cheetah_kinematics_lcm
     cheetah_measurement
     utils

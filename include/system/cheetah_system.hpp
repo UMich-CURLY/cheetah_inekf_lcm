@@ -54,13 +54,13 @@ class CheetahSystem {
         // std::string kitti_file_name_;
         // std::string tum_file_name_;
 
-        std::ofstream kitti_outfile;
-        std::ofstream tum_outfile;
-        int pose_record_step_size;
-        int step_size_count;
+        std::ofstream kitti_outfile_;
+        std::ofstream tum_outfile_;
+        int pose_record_step_size_;
+        int step_size_count_;
         
         // Publish path node enable flag
-        bool enable_pose_publisher_;
+        bool enable_pose_log_txt_;
 };
 
 #endif // CHEETAHSYSTEM_H

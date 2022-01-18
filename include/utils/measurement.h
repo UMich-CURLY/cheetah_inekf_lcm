@@ -15,7 +15,7 @@
 #define MEASUREMENT_H 
 #include <Eigen/Dense>
 #include <string>
-#include "InEKF.h"
+#include "core/InEKF.h"
 // #include "tf/transform_listener.h"
 
 enum MeasurementType {EMPTY, IMU, KINEMATICS, CONTACT, JOINT_STATE};

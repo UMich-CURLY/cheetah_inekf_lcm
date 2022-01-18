@@ -7,7 +7,7 @@
 
 #include "utils/cheetah_data_t.hpp"
 #include "system/cheetah_state.hpp"
-#include "InEKF.h"
+#include "core/InEKF.h"
 #include <lcm/lcm-cpp.hpp>
 #include "communication/lcm-types/cheetah_inekf_lcm/pose_t.hpp"
 // #include "geometry_msgs/Point.h"
@@ -51,7 +51,7 @@ class BodyEstimator {
         bool bias_initialized_ = false;
         bool static_bias_initialization_ = false;
         bool estimator_debug_enabled_ = false;
-        bool lcm_publish_visualization_markers_ = false;
+        bool lcm_publish_flag_ = false;
         std::vector<Eigen::Matrix<double,6,1>,Eigen::aligned_allocator<Eigen::Matrix<double,6,1>>> bias_init_vec_;
         Eigen::Vector3d bg0_ = Eigen::Vector3d::Zero();
         Eigen::Vector3d ba0_ = Eigen::Vector3d::Zero();

@@ -1,3 +1,4 @@
 build/
 data/
 config/settings.yaml
+.vscode

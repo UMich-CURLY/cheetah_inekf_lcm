@@ -16,19 +16,25 @@ BodyEstimator::BodyEstimator(lcm::LCM* lcm) :
     // Set debug output
     char resolved_path[PATH_MAX];
     char* p = realpath("../", resolved_path);
-    std::cout << resolved_path << std::endl;
+    // std::cout << resolved_path << std::endl;
     config_setting = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
 
     estimator_debug_enabled_ = config_setting["settings"]["estimator_enable_debug"] ? config_setting["settings"]["estimator_enable_debug"].as<bool>() : false;
     LCM_POSE_CHANNEL = config_setting["settings"]["estimator_lcm_pose_channel"] ? config_setting["settings"]["estimator_lcm_pose_channel"].as<std::string>() : "CHEETAH_POSE_CHANNEL";
-    lcm_publish_visualization_markers_ = config_setting["settings"]["estimator_publish_visualization_markers"] ? config_setting["settings"]["estimator_publish_visualization_markers"].as<bool>() : false;
+    lcm_publish_flag_ = config_setting["settings"]["estimator_publish_lcm"] ? config_setting["settings"]["estimator_publish_lcm"].as<bool>() : false;
     static_bias_initialization_ = config_setting["settings"]["estimator_static_bias_initialization"] ? config_setting["settings"]["estimator_static_bias_initialization"].as<bool>() : false;
+
+
+    std::cout<<"------Estimator Configuration------"<<std::endl;
+    std::cout<<"estimator_enable_debug: "<<std::boolalpha << estimator_debug_enabled_ << std::endl;
+    std::cout<<"estimator_publish_lcm: "<< lcm_publish_flag_ << std::endl;
+    std::cout<<"estimator_lcm_pose_channel: "<<LCM_POSE_CHANNEL << std::endl;
+    std::cout<<"estimator_static_bias_initialization: "<< static_bias_initialization_ << std::endl;
+    std::cout<<"-----------------------------------"<<std::endl;
 
     inekf::NoiseParams params;
     double temp_param;
     config_noise = YAML::LoadFile(std::string(resolved_path) + "/config/noise.yaml");
-    
-    std::cout << "Hello: " << config_noise["noise"]["gyroscope_std"].as<double>() << std::endl;
 
     if (config_noise["noise"]["gyroscope_std"]) { 
         temp_param = config_noise["noise"]["gyroscope_std"].as<double>();
@@ -100,7 +106,7 @@ void BodyEstimator::update(cheetah_lcm_packet_t& cheetah_data, CheetahState& sta
     state.setBasePosition(p);
     state.setBaseVelocity(v); 
 
-    if (lcm_publish_visualization_markers_) {
+    if (lcm_publish_flag_) {
         publishPose(t_prev_, "/cheetah/imu", seq_, state);
     }
 
@@ -172,7 +178,7 @@ void BodyEstimator::correctKinematics(CheetahState& state) {
 
 }
 
-// Publish current pose over lcm & and save to ros
+// Publish current pose over lcm
 void BodyEstimator::publishPose(double time, std::string map_frame_id, uint32_t seq, CheetahState& state) {
     cheetah_inekf_lcm::pose_t pose;
     pose.seq = seq;
