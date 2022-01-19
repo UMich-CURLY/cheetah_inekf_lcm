@@ -5,8 +5,9 @@ This repository has the following features:
 * Use LCM for light-weight communication with other programs.
 * Allow asynchronous input from IMU, joint encoders, and contact events.
 * Allow user to customize for different input source. (Including the contact events.)
-* Real-time performance (around 430 Hz) on the upboard computer inside Mini Cheetah. (Tested alongside with the [MIT Controller](https://github.com/mit-biomimetics/Cheetah-Software).)
-**Note:** This repository contains a pure cmake project with LCM as the communication interface. If you wish to use ROS, you can refer to [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
+* Real-time performance (around 430 Hz) on the UP Board computer inside Mini Cheetah. (Tested alongside with the [MIT Controller](https://github.com/mit-biomimetics/Cheetah-Software).)
+
+**Note:** This repository uses LCM to achieves light-weight communication. If you wish to use ROS, you can refer to [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
 
 ## Dependencies
 * [lcm 1.4.0](https://github.com/lcm-proj/lcm/releases/tag/v1.4.0)
@@ -28,41 +29,42 @@ make -j2
 ```
 
 ## Configuration
-### `config/settings.yaml`:
-1. `lcm_enable_debug_output` to `false` if no debug output is wanted for receiving lcm messages
-2. `project_root_dir` to filepath to your installation directory for this repo
-3. `estimator_enable_debug` to `true` if you want to view the state of the inekf in the terminal while it is running
-4. `estimator_publish_lcm` to `true` if you want to publish the robot pose over LCM channel "LCM_POSE_CHANNEL"
-5. `estimator_lcm_pose_channel` to `true` if you want to change the name of the LCM channel that the robot pose is published over
-6. `estimator_static_bias_initialization` to `true` if you want to initialize static bias for the IMU
-7. `system_enable_pose_publisher` to `true` if you want to save the robot pose to file and publish the robot pose over ROS
-8. `system_inekf_pose_filename` and `system_inekf_tum_pose_filename` to different filepaths to specify which files you would like the robot poses (paths) to be saved to (the second is a tum syntax)
-9. `run_synced` to `true` if you have a synced message channel that contains contact estimation results; Otherwise, leave it as `false`
-10. `lcm_*_channel` to the corresponding channels your robot is publishing
+### Parameters can be modified in `config/settings.yaml`:
+* `run_synced`: Set to `true` if you wish to subscribe from a synced input topic.
+* `estimator_enable_debug`: Enable debug print on screen.
+* `estimator_publish_lcm`: Enable LCM publisher for the estimated pose.
+* `estimator_lcm_pose_channel`: Name of the LCM channel for output robot pose.
+* `estimator_static_bias_initialization`: Enable static bias initialization using the first several measurements from IMU.
+* `system_enable_pose_log_txt`: Enable pose logger. Enable this will write down the estimated pose in a txt file.
+* `system_inekf_kitti_pose_filename`: Path for the logged txt file. Kitti means the file will be recorded following the [Kitti format](http://www.cvlibs.net/datasets/kitti/eval_odometry.php). 
+*  `system_inekf_tum_pose_filename`: Path for the logged txt file in [TUM format](https://vision.in.tum.de/data/datasets/rgbd-dataset/file_formats). 
+* `lcm_leg_channel`: LCM channel for joint encoder inputs. It contains q, qd, p, v, tau.
+* `lcm_imu_channel`: LCM channel for IMU inputs. It contains acceleration, omega, rpy, quaternion.
+* `lcm_contact_est_channel`: LCM channel for indicating contact events.  
+* `lcm_reinitialize_channel`: LCM channel for reinitialization command. It contains a boolean value indicating if the filter needs to be reset.
 
-### In other `.yaml` files:
-Change the parameters to the values you know or you want to test with.
-## Try the demo data for testing:
-## Some helpful functions :
-1. Two formats of path *.txt* file will be saved. One is in kitti format, and the other is in tum format. You can use [evo](https://github.com/MichaelGrupp/evo) to visualize the result. The command will be like:
+## Resetting the Filter
+This program enables users to reset the filter whenever is needed. 
+* To reset the filter, publish a `true` signal in the `reinitialization_lcmt` LCM type. (Don't forget to change the channel name in `config/settings.yaml`.)
+* Note that when the filter is reset, all previous path, including the saved txt file will be reset.
+
+## Using Customized Contact Estimation
+* If you wish to use customized source of contact events, publish your contact estimation results in `contact_est[4]` under LCM type `wbc_test_data_t`.
+* `contact_est[4]` denotes the contact event for each legs of the Mini Cheetah. 0 indicates no contact, and 1 indicates a firm contact.
+* If you would like to have reliable contact estimations, check out our recent work [deep-contact-estimator](https://github.com/UMich-CURLY/deep-contact-estimator) and [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
+
+
+## Citation
+If you find this work useful, please kindly cite our publication in 2021 Conference on Robot Learning:
+
+* Tzu-Yuan Lin, Ray Zhang, Justin Yu, and Maani Ghaffari. "Legged Robot State Estimation using Invariant Kalman Filtering and Learned Contact Events." In Conference on robot learning. PMLR, 2021
 ```
-evo_traj tum *_tum.txt -p
+@inproceedings{
+   lin2021legged,
+   title={Legged Robot State Estimation using Invariant Kalman Filtering and Learned Contact Events},
+   author={Tzu-Yuan Lin and Ray Zhang and Justin Yu and Maani Ghaffari},
+   booktitle={5th Annual Conference on Robot Learning },
+   year={2021},
+   url={https://openreview.net/forum?id=yt3tDB67lc5}
+}
 ```
-2. The program subscribes to an `lcm_reinitialize_channel`. If the message received in this channel is `true`, the program will be reinitialized and the previous results will be discarded, **including the saved path files**. This LCM message can be published by the RC you are using to control the robot.
-## Helpful Commands:
-### Generating LCM Types:
-1. cd cheetah_inekf_lcm_root_directory/scripts
-2. bash ./make_types.sh
-### Running Cheetah Estimator
-1. cd ~/pathto/catkin_ws
-2. In a new terminal in the catkin_ws, do catkin_make (perhaps multiple times)
-3. Run `source ~/devel/setup.bash`
-5. In the same terminal, run `rosrun cheetah_inekf_lcm cheetah_estimator`
-6. Run `lcm file lcm-logplayer --speed=1.0 --lcm-url=udpm://239.255.76.67:7667?ttl=2 NAME_OF_LCM_LOG_FILE_HERE`
-7. The terminal should begin printing out the robot state if the settings.yaml output variables are enabled
-### Debugging Inekf Output
-1. Start running the cheetah estimator using the instructions above
-2. Enter `rviz` in the terminal
-2. Select `Add by topic` setting and select path
-3. Changed fixed frame to the same value as `map_frame_id` in config/settings.yaml
-4. The robot pose should begin being drawn in rviz
