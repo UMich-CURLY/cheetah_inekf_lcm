@@ -2,12 +2,12 @@
 Contact-Aided Invariant Extended Kalman Filtering for Mini Cheetah with Lightweight Communications and Marshalling (LCM) interface.
 The InEKF takes in data from IMU, joint encoders, and foot contact events to perform state estimation.
 This repository has the following features:
-* Use LCM for light-weight communication with other programs.
+* Use LCM for lightweight communication with other programs.
 * Allow asynchronous input from IMU, joint encoders, and contact events.
-* Allow user to customize for different input source. (Including the contact events.)
+* Allow user to customize for different input sources. (Including the contact events.)
 * Real-time performance (around 430 Hz) on the UP Board computer inside Mini Cheetah. (Tested alongside with the [MIT Controller](https://github.com/mit-biomimetics/Cheetah-Software).)
 
-**Note:** This repository uses LCM to achieves light-weight communication. If you wish to use ROS, you can refer to [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
+**Note:** This repository uses LCM to achieve lightweight communication. If you wish to use ROS, you can refer to [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
 
 ## Dependencies
 * [lcm 1.4.0](https://github.com/lcm-proj/lcm/releases/tag/v1.4.0)
@@ -31,7 +31,7 @@ make -j2
 ## Configuration
 ### Parameters can be modified in `config/settings.yaml`:
 * `run_synced`: Set to `true` if you wish to subscribe from a synced input topic.
-* `estimator_enable_debug`: Enable debug print on screen.
+* `estimator_enable_debug`: Enable debug print on the screen.
 * `estimator_publish_lcm`: Enable LCM publisher for the estimated pose.
 * `estimator_lcm_pose_channel`: Name of the LCM channel for output robot pose.
 * `estimator_static_bias_initialization`: Enable static bias initialization using the first several measurements from IMU.
@@ -46,11 +46,11 @@ make -j2
 ## Resetting the Filter
 This program enables users to reset the filter whenever is needed. 
 * To reset the filter, publish a `true` signal in the `reinitialization_lcmt` LCM type. (Don't forget to change the channel name in `config/settings.yaml`.)
-* Note that when the filter is reset, all previous path, including the saved txt file will be reset.
+* Note that when the filter is reset, all previous paths, including the saved txt files will be reset.
 
 ## Using Customized Contact Estimation
-* If you wish to use customized source of contact events, publish your contact estimation results in `contact_est[4]` under LCM type `wbc_test_data_t`.
-* `contact_est[4]` denotes the contact event for each legs of the Mini Cheetah. 0 indicates no contact, and 1 indicates a firm contact.
+* If you wish to use a customized source of contact events, publish your contact estimation results in `contact_est[4]` under LCM type `wbc_test_data_t`.
+* `contact_est[4]` denotes the contact event for each leg of the Mini Cheetah. 0 indicates no contact, and 1 indicates a firm contact.
 * If you would like to have reliable contact estimations, check out our recent work [deep-contact-estimator](https://github.com/UMich-CURLY/deep-contact-estimator) and [cheetah_inekf_realtime](https://github.com/UMich-CURLY/cheetah_inekf_realtime).
 
 
