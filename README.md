@@ -1,6 +1,7 @@
 # cheetah_inekf_lcm
 Contact-Aided Invariant Extended Kalman Filtering for Mini Cheetah with Lightweight Communications and Marshalling (LCM) interface.
 The InEKF takes in data from IMU, joint encoders, and foot contact events to perform state estimation.
+
 This repository has the following features:
 * Use LCM for lightweight communication with other programs.
 * Allow asynchronous input from IMU, joint encoders, and contact events.
