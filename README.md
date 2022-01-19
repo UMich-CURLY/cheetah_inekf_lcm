@@ -1,5 +1,5 @@
 # cheetah_inekf_lcm
-Contact-Aided Invariant Extended Kalman Filtering for Mini Cheetah with LCM. 
+This project contains a contact-aided invariant-ekf for Mini Cheetah with LCM. The program runs real-time on the UP Board computer inside Mini Cheetah.
 
 This repository has the following features:
 * Use LCM for lightweight communication with other programs.
