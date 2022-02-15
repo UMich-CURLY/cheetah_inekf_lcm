@@ -11,6 +11,11 @@
 
 BodyEstimator::BodyEstimator(lcm::LCM* lcm) :
     lcm_(lcm), t_prev_(0), imu_prev_(Eigen::Matrix<double,6,1>::Zero()) {
+    
+    /// DELETE:
+    std::string bias_file_name_ = "/home/tingjun/Desktop/mini_cheetah/cheetah_inekf_lcm/bias_vs_time.txt";
+    bias_outfile_.open(bias_file_name_,std::ofstream::out);
+    bias_outfile_.precision(20);
 
     // Create private node handle
     // Set debug output
@@ -166,6 +171,12 @@ void BodyEstimator::correctKinematics(CheetahState& state) {
     kinematics.push_back(leftFrontFoot);
     kinematics.push_back(rightHindFoot);
     kinematics.push_back(leftHindFoot);  
+
+    /// DELETE:
+    Eigen::Vector3d gyro_bias = filter_.getState().getGyroscopeBias();
+    Eigen::Vector3d acc_bias = filter_.getState().getAccelerometerBias();
+
+    bias_outfile_ << t_prev_ << "\n" << gyro_bias << "\n" << acc_bias << std::endl;
 
     filter_.CorrectKinematics(kinematics);
     if (estimator_debug_enabled_) {

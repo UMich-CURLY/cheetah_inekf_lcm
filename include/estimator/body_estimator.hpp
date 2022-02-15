@@ -7,6 +7,8 @@
 
 #include "utils/cheetah_data_t.hpp"
 #include "system/cheetah_state.hpp"
+#include <fstream>
+#include <iostream>
 #include "core/InEKF.h"
 #include <lcm/lcm-cpp.hpp>
 #include "communication/lcm-types/cheetah_inekf_lcm/pose_t.hpp"
@@ -60,6 +62,9 @@ class BodyEstimator {
         Eigen::Matrix<double,6,1> imu_prev_;
         const Eigen::Matrix<double,12,12> encoder_cov_ = 0.0174533*0.0174533 * Eigen::Matrix<double,12,12>::Identity(); // 1 deg std dev 
         const Eigen::Matrix<double,3,3> prior_kinematics_cov_ = 0.05*0.05 * Eigen::Matrix<double,3,3>::Identity(); // 5 cm std Adds to FK covariance
+
+        /// DELETE:
+        std::ofstream bias_outfile_;
 };
 
 #endif // BODYESTIMATOR_H
