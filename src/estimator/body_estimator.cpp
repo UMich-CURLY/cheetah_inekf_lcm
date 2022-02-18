@@ -13,7 +13,7 @@ BodyEstimator::BodyEstimator(lcm::LCM* lcm) :
     lcm_(lcm), t_prev_(0), imu_prev_(Eigen::Matrix<double,6,1>::Zero()) {
     
     /// DELETE:
-    std::string bias_file_name_ = "/home/tingjun/Desktop/mini_cheetah/cheetah_inekf_lcm/bias_vs_time.txt";
+    std::string bias_file_name_ = "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/bias_vs_time.txt";
     bias_outfile_.open(bias_file_name_,std::ofstream::out);
     bias_outfile_.precision(20);
 

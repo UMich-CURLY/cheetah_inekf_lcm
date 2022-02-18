@@ -34,5 +34,5 @@ settings:
   # Cheetah System
   system_enable_pose_log_txt: true                                                                  # log the pose as txt file 
   system_pose_record_step_size: 1                                                                          # number of pose to skip while logging. Ex. 5 means record every 5 poses.
-  system_inekf_kitti_pose_filename: "/home/tingjun/Desktop/mini_cheetah/cheetah_inekf_lcm/cheetah_inekf_pose_kitti.txt"    # path to logged trajectory in Kitti format
-  system_inekf_tum_pose_filename: "/home/tingjun/Desktop/mini_cheetah/cheetah_inekf_lcm/cheetah_inekf_pose_tum.txt"  # path to logged trajectory in TUM format
+  system_inekf_kitti_pose_filename: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/cheetah_inekf_pose_kitti.txt"    # path to logged trajectory in Kitti format
+  system_inekf_tum_pose_filename: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/cheetah_inekf_pose_tum.txt"  # path to logged trajectory in TUM format

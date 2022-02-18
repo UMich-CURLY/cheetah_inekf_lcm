@@ -13,6 +13,8 @@ namespace cheetah_inekf_lcm
         config_setting = YAML::LoadFile(std::string(resolved_path) + "/config/settings.yaml");
         config_inekf = YAML::LoadFile(std::string(resolved_path) + "/config/inekf.yaml");
 
+        std::string quat_save_path = "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/quat_in.txt";
+        quat_in.open(quat_save_path);
         /// NOSYNC:
         std::string mode = config_setting["settings"]["mode"] ? config_setting["settings"]["mode"].as<std::string>() : "normal";
         std::string lcm_leg_channel = config_setting["settings"]["lcm_leg_channel"] ? config_setting["settings"]["lcm_leg_channel"].as<std::string>() : "leg_control_data";
@@ -65,7 +67,9 @@ namespace cheetah_inekf_lcm
 
     }
 
-    lcm_handler::~lcm_handler() {}
+    lcm_handler::~lcm_handler() {
+        quat_in.close();
+    }
 
     void lcm_handler::receiveReinitializeMsg(const lcm::ReceiveBuffer *rbuf,
                                           const std::string &chan,
@@ -125,6 +129,8 @@ namespace cheetah_inekf_lcm
             imu_measurement_ptr.get()->linear_acceleration.x = msg->acc[0];
             imu_measurement_ptr.get()->linear_acceleration.y = msg->acc[1];
             imu_measurement_ptr.get()->linear_acceleration.z = msg->acc[2];
+
+            quat_in << msg->quat[0] << "," << msg->quat[1] << "," << msg->quat[2] << "," << msg->quat[3] << std::endl;
 
             double timestamp = (1.0 * (rbuf->recv_utime - start_time_)) / pow(10, 6);
             

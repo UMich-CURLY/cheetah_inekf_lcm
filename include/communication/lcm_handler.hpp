@@ -106,6 +106,8 @@ class lcm_handler {
     int omega_dim;
     int quat_dim;
     int rpy_dim;
+
+    std::ofstream quat_in;
 };
 
 } // namespace mini_cheetah

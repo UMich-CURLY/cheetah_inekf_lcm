@@ -10,17 +10,24 @@ except ImportError:
 import struct
 
 class pose_t(object):
-    __slots__ = ["seq", "stamp", "frame_id", "body"]
+    __slots__ = ["seq", "stamp", "frame_id", "position", "roll", "pitch", "yaw", "velocity", "droll", "dpitch", "dyaw"]
 
-    __typenames__ = ["int64_t", "double", "string", "double"]
+    __typenames__ = ["int64_t", "double", "string", "double", "double", "double", "double", "double", "double", "double", "double"]
 
-    __dimensions__ = [None, None, None, [3]]
+    __dimensions__ = [None, None, None, [3], None, None, None, [3], None, None, None]
 
     def __init__(self):
         self.seq = 0
         self.stamp = 0.0
         self.frame_id = ""
-        self.body = [ 0.0 for dim0 in range(3) ]
+        self.position = [ 0.0 for dim0 in range(3) ]
+        self.roll = 0.0
+        self.pitch = 0.0
+        self.yaw = 0.0
+        self.velocity = [ 0.0 for dim0 in range(3) ]
+        self.droll = 0.0
+        self.dpitch = 0.0
+        self.dyaw = 0.0
 
     def encode(self):
         buf = BytesIO()
@@ -34,7 +41,10 @@ class pose_t(object):
         buf.write(struct.pack('>I', len(__frame_id_encoded)+1))
         buf.write(__frame_id_encoded)
         buf.write(b"\0")
-        buf.write(struct.pack('>3d', *self.body[:3]))
+        buf.write(struct.pack('>3d', *self.position[:3]))
+        buf.write(struct.pack(">ddd", self.roll, self.pitch, self.yaw))
+        buf.write(struct.pack('>3d', *self.velocity[:3]))
+        buf.write(struct.pack(">ddd", self.droll, self.dpitch, self.dyaw))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -51,14 +61,17 @@ class pose_t(object):
         self.seq, self.stamp = struct.unpack(">qd", buf.read(16))
         __frame_id_len = struct.unpack('>I', buf.read(4))[0]
         self.frame_id = buf.read(__frame_id_len)[:-1].decode('utf-8', 'replace')
-        self.body = struct.unpack('>3d', buf.read(24))
+        self.position = struct.unpack('>3d', buf.read(24))
+        self.roll, self.pitch, self.yaw = struct.unpack(">ddd", buf.read(24))
+        self.velocity = struct.unpack('>3d', buf.read(24))
+        self.droll, self.dpitch, self.dyaw = struct.unpack(">ddd", buf.read(24))
         return self
     _decode_one = staticmethod(_decode_one)
 
     _hash = None
     def _get_hash_recursive(parents):
         if pose_t in parents: return 0
-        tmphash = (0x81a59b4b48f12127) & 0xffffffffffffffff
+        tmphash = (0x6f925c8e35a505a3) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

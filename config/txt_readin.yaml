@@ -1,0 +1,15 @@
+# Fill in the txt filenames that contain the corresponding data:
+
+acc: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/acc.txt"
+bad_packets: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/bad_packets.txt"
+good_packets: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/good_packets.txt"
+num_legs: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/num_legs.txt"
+omega: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/omega.txt"
+p: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/p.txt"
+q: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/q.txt"
+qd: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/qd.txt"
+quat: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/quat.txt"
+rpy: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/rpy.txt"
+tau_est: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/tau_est.txt"
+timestamp: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/timestamp.txt"
+v: "/home/tingjun/Desktop/Cheetah_Proj/cheetah_inekf_lcm/data/v.txt"
