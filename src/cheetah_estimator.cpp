@@ -68,6 +68,7 @@ int main(int argc, char **argv)
             // Reinitialize the whole system if receive reinitialize command:
 
             if (reinit_cmd) {
+                delete system;
                 break;
             }
             
@@ -79,6 +80,7 @@ int main(int argc, char **argv)
         }
 
     }
-    
+
+        
     return 0;
 }
