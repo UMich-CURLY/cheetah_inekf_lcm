@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
         // Initialize CheetahSystem
         std::cout << "Initializing Cheetah System" << std::endl;
-        CheetahSystem *system = new CheetahSystem(&lcm, &cdata_mtx, &cheetah_input_data);
+        CheetahSystem system(&lcm, &cdata_mtx, &cheetah_input_data);
         // system->setEstimator(std::make_shared<BodyEstimator>());
         std::cout << "Cheetah System is initialized" << std::endl;
 
@@ -68,11 +68,10 @@ int main(int argc, char **argv)
             // Reinitialize the whole system if receive reinitialize command:
 
             if (reinit_cmd) {
-                delete system;
                 break;
             }
             
-            system->step();
+            system.step();
             // stop = high_resolution_clock::now(); 
             // auto duration = duration_cast<microseconds>(stop - start);
             // std::cout << "Frequency: " << (double) (1000000.0 / duration.count()) << "Hz" << std::endl;
